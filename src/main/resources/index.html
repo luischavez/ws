@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket Cliente</title>
+</head>
+<body>
+
+    <div>
+        <label for="longitude">Longitud:</label>
+        <input id="longitude" type="number">
+        <br>
+
+        <label for="latitude">Latitud:</label>
+        <input id="latitude" type="number">
+        <br>
+
+        <button id="sendButton">Enviar</button>
+    </div>
+
+    <p id="message"></p>
+
+    <script>
+        (function() {
+            var socket = new WebSocket('ws://localhost:8887');
+
+            var sendButton = document.getElementById('sendButton');
+            var longitude = document.getElementById('longitude');
+            var latitude = document.getElementById('latitude');
+
+            var message = document.getElementById('message');
+
+            socket.onopen = function(e) {
+                console.log('Se conecto al servidor');
+            }
+
+            socket.onmessage = function(e) {
+                message.innerHTML = e.data;
+
+                var data = JSON.parse(e.data);
+            }
+
+            socket.onclose = function(e) {
+                console.log('se desconecto del servidor');
+            }
+
+            sendButton.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                socket.send(JSON.stringify({
+                    longitude: longitude.value,
+                    latitude: latitude.value
+                }));
+            });
+            
+        })();
+    </script>
+</body>
+</html>
