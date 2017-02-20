@@ -17,6 +17,9 @@ import org.json.simple.parser.ParseException;
  * @author Frost
  */
 public class SocketServer extends WebSocketServer {
+    
+    private float latitude;
+    private float longitude;
 
     public SocketServer(int port) {
         super(new InetSocketAddress(port));
@@ -41,10 +44,10 @@ public class SocketServer extends WebSocketServer {
         try {
             JSONObject object = (JSONObject) parser.parse(message);
 
-            float latitude = Float.valueOf(object.get("latitude").toString());
-            float longitude = Float.valueOf(object.get("longitude").toString());
+            latitude = Float.valueOf(object.get("latitude").toString());
+            longitude = Float.valueOf(object.get("longitude").toString());
 
-            send(latitude + 1, longitude + 1);
+            send(latitude, longitude);
         } catch (ParseException exception) {
             ws.close();
         }
@@ -73,7 +76,7 @@ public class SocketServer extends WebSocketServer {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                WebSocketImpl.DEBUG = true;
+                WebSocketImpl.DEBUG = false;
                 int port = 8887;
 
                 SocketServer server = new SocketServer(port);

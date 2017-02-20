@@ -3,31 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Socket Cliente</title>
+    <style>
+        #map,
+        #panorama {
+          height:300px;
+          background:#6699cc;
+        }
+    </style>
 </head>
 <body>
+    
+    <div id="map"></div>
 
     <div>
-        <label for="longitude">Longitud:</label>
-        <input id="longitude" type="number">
-        <br>
+        <label for="address">Buscar</label>
+        <input id="address" type="text">
 
-        <label for="latitude">Latitud:</label>
-        <input id="latitude" type="number">
-        <br>
-
-        <button id="sendButton">Enviar</button>
+        <button id="searchButton">Buscar</button>
     </div>
 
     <p id="message"></p>
-
-    <script>
+    
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdT8ToFL_wPbdxGB4wpcUqcQMQcA0I5qY&libraries=geometry"></script>
+    <script type="text/javascript" src="https://hpneo.github.io/gmaps/gmaps.js"></script>
+    <script type="text/javascript">
         (function() {
+            var map = new GMaps({
+                div: '#map',
+                zoom: 16,
+                lat: -12.043333,
+                lng: -77.028333,
+                click: function(e) {
+                    send(e.latLng);
+                }
+            });
+
             var socket = new WebSocket('ws://localhost:8887');
 
             var sendButton = document.getElementById('sendButton');
-            var longitude = document.getElementById('longitude');
-            var latitude = document.getElementById('latitude');
-
+            var searchButton = document.getElementById('searchButton');
             var message = document.getElementById('message');
 
             socket.onopen = function(e) {
@@ -44,14 +59,33 @@
                 console.log('se desconecto del servidor');
             }
 
-            sendButton.addEventListener('click', function(event) {
+            searchButton.addEventListener('click', function(event) {
                 event.preventDefault();
 
-                socket.send(JSON.stringify({
-                    longitude: longitude.value,
-                    latitude: latitude.value
-                }));
+                GMaps.geocode({
+                    address: $('#address').val(),
+                    callback: function(results, status) {
+                        if (status == 'OK') {
+                            var latlng = results[0].geometry.location;
+                            map.setCenter(latlng.lat(), latlng.lng());
+                            map.addMarker({
+                                lat: latlng.lat(),
+                                lng: latlng.lng(),
+                                click: function(e) {
+                                    send(e);
+                                }
+                            });
+                        }
+                    }
+                });
             });
+            
+            var send = function(position) {
+                socket.send(JSON.stringify({
+                    longitude: position.lng(),
+                    latitude: position.lat()
+                }));
+            }
             
         })();
     </script>
