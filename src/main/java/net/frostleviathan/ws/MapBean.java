@@ -78,8 +78,4 @@ public class MapBean extends VBean implements SocketListener {
         return true;
     }
 
-    public static void main(String... args) {
-        
-    }
-
 }
