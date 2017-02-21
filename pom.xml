@@ -26,5 +26,10 @@
             <artifactId>nanohttpd</artifactId>
             <version>2.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>frmall</groupId>
+            <artifactId>frmall</artifactId>
+            <version>1</version>
+        </dependency>
     </dependencies>
 </project>

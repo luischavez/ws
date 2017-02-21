@@ -1,7 +1,9 @@
 package net.frostleviathan.ws;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
@@ -18,11 +20,24 @@ import org.json.simple.parser.ParseException;
  */
 public class SocketServer extends WebSocketServer {
     
+    private List<SocketListener> listeners;
+    
     private float latitude;
     private float longitude;
 
     public SocketServer(int port) {
         super(new InetSocketAddress(port));
+        listeners = new ArrayList<>();
+    }
+    
+    public void addListener(SocketListener listener) {
+        listeners.add(listener);
+    }
+    
+    public void removeListener(SocketListener listener) {
+        if (listeners.contains(listener)) {
+            listeners.remove(listener);
+        }
     }
 
     @Override
@@ -46,6 +61,10 @@ public class SocketServer extends WebSocketServer {
 
             latitude = Float.valueOf(object.get("latitude").toString());
             longitude = Float.valueOf(object.get("longitude").toString());
+            
+            for (SocketListener listener : listeners) {
+                listener.onPosition(latitude, longitude);
+            }
 
             send(latitude, longitude);
         } catch (ParseException exception) {
@@ -71,16 +90,12 @@ public class SocketServer extends WebSocketServer {
             }
         }
     }
-
-    public static void main(String... args) {
+    
+    public void startSocket() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                WebSocketImpl.DEBUG = false;
-                int port = 8887;
-
-                SocketServer server = new SocketServer(port);
-                server.start();
+                SocketServer.this.start();
             }
         }).start();
     }

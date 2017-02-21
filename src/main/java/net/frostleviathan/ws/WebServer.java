@@ -13,8 +13,8 @@ import java.io.InputStreamReader;
  */
 public class WebServer extends NanoHTTPD {
 
-    public WebServer() throws IOException {
-        super(8081);
+    public WebServer(int port) throws IOException {
+        super(port);
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
     }
 
@@ -37,14 +37,6 @@ public class WebServer extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession session) {
         return newFixedLengthResponse(getIndex());
-    }
-
-    public static void main(String... args) {
-        try {
-            WebServer webServer = new WebServer();
-        } catch (IOException ex) {
-            System.err.println(ex);
-        }
     }
 
 }
