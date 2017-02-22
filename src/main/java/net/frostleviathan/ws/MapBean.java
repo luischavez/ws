@@ -28,9 +28,11 @@ public class MapBean extends VBean implements SocketListener {
         super.init(ih);
         
         try {
-            WebServer webServer = new WebServer(8081);
             SocketServer socketServer = new SocketServer(8887);
             socketServer.addListener(this);
+            socketServer.startSocket();
+            
+            WebServer webServer = new WebServer(8081);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
