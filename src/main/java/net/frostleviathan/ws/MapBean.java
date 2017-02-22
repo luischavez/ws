@@ -1,7 +1,5 @@
 package net.frostleviathan.ws;
 
-import java.io.IOException;
-
 import oracle.forms.api.FException;
 import oracle.forms.handler.IHandler;
 import oracle.forms.properties.ID;
@@ -27,15 +25,12 @@ public class MapBean extends VBean implements SocketListener {
     public void init(IHandler ih) {
         super.init(ih);
         
-        try {
-            SocketServer socketServer = new SocketServer(8887);
-            socketServer.addListener(this);
-            socketServer.startSocket();
-            
-            WebServer webServer = new WebServer(8081);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        WebServer webServer = new WebServer(8081);
+        webServer.startWebServer();
+
+        SocketServer socketServer = new SocketServer(8887);
+        socketServer.addListener(this);
+        socketServer.startSocket();
 
         handler = ih;
     }
@@ -80,4 +75,9 @@ public class MapBean extends VBean implements SocketListener {
         return true;
     }
 
+    public static void main(String... args) {
+        MapBean bean = new MapBean();
+        bean.init(null);
+    }
+    
 }

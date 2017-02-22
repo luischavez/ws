@@ -13,9 +13,8 @@ import java.io.InputStreamReader;
  */
 public class WebServer extends NanoHTTPD {
 
-    public WebServer(int port) throws IOException {
+    public WebServer(int port) {
         super(port);
-        start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
     }
 
     protected String getIndex() {
@@ -28,10 +27,18 @@ public class WebServer extends NanoHTTPD {
                 builder.append(line).append("\n");
             }
         } catch (IOException ex) {
-            System.err.println(ex);
+            ex.printStackTrace();
         }
 
         return builder.toString();
+    }
+    
+    public void startWebServer() {
+        try {
+            start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

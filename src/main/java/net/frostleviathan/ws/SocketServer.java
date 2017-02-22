@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
@@ -67,8 +66,9 @@ public class SocketServer extends WebSocketServer {
             }
 
             send(latitude, longitude);
-        } catch (ParseException exception) {
+        } catch (ParseException ex) {
             ws.close();
+            ex.printStackTrace();
         }
     }
 
