@@ -64,8 +64,6 @@ public class SocketServer extends WebSocketServer {
             for (SocketListener listener : listeners) {
                 listener.onPosition(latitude, longitude);
             }
-
-            send(latitude, longitude);
         } catch (ParseException ex) {
             ws.close();
             ex.printStackTrace();
@@ -77,7 +75,7 @@ public class SocketServer extends WebSocketServer {
         System.err.println("Ocurrio un error!");
     }
 
-    protected void send(float latitude, float longitude) {
+    public void send(float latitude, float longitude) {
         JSONObject object = new JSONObject();
         object.put("latitude", latitude);
         object.put("longitude", longitude);
