@@ -20,15 +20,18 @@ public class MapBean extends VBean implements SocketListener {
 
     private float latitude;
     private float longitude;
+    
+    private WebServer webServer;
+    private SocketServer socketServer;
 
     @Override
     public void init(IHandler ih) {
         super.init(ih);
         
-        WebServer webServer = new WebServer(8081);
+        webServer = new WebServer(8081);
         webServer.startWebServer();
 
-        SocketServer socketServer = new SocketServer(8887);
+        socketServer = new SocketServer(8887);
         socketServer.addListener(this);
         socketServer.startSocket();
 
@@ -71,6 +74,8 @@ public class MapBean extends VBean implements SocketListener {
         if (LATITUDE_ID == id) {
             latitude = Float.valueOf((String) o);
         }
+        
+        socketServer.send(latitude, longitude);
 
         return true;
     }
